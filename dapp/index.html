@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Simple Storage DApp</title>
+</head>
+
+<body>
+    <h1>Simple Storage DApp</h1>
+    <input type="text" id="storageValue">
+    <button onclick="set()">Set Value</button>
+    <button onclick="get()">Get Value</button>
+    <p id="value"></p>
+
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.3.6/dist/web3.min.js"></script>
+    <script>
+        const web3 = new Web3(Web3.givenProvider || "http://127.0.0.1:7545");
+        const contractAddress = '0x686B8e8da5C1F091A4EaA5D38280F2fA3155075A'; // 使用你的合约地址替换这里
+
+        // 使用你的 abi 替换这里
+        const contractABI = [
+            {
+                "inputs": [],
+                "stateMutability": "nonpayable",
+                "type": "constructor"
+            },
+            {
+                "inputs": [],
+                "name": "greeting",
+                "outputs": [
+                    {
+                        "internalType": "string",
+                        "name": "",
+                        "type": "string"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function",
+                "constant": true
+            },
+            {
+                "inputs": [
+                    {
+                        "internalType": "string",
+                        "name": "_greeting",
+                        "type": "string"
+                    }
+                ],
+                "name": "setGreeting",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "getGreeting",
+                "outputs": [
+                    {
+                        "internalType": "string",
+                        "name": "",
+                        "type": "string"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function",
+                "constant": true
+            }
+        ] // 使用你的合约ABI替换这里
+
+        const contract = new web3.eth.Contract(contractABI, contractAddress);
+
+        async function set() {
+            const accounts = await web3.eth.getAccounts();
+            const value = document.getElementById('storageValue').value;
+            await contract.methods.setGreeting(value).send({ from: accounts[0] });
+        }
+
+        async function get() {
+            const value = await contract.methods.getGreeting().call();
+            document.getElementById('value').innerText = value;
+        }
+    </script>
+</body>
+
+</html>
